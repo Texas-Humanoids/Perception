@@ -56,6 +56,11 @@ docker compose --profile cpu up -d
 docker compose --profile gpu up -d
 ```
 
+```bash
+docker compose exec cpu bash              # open a shell inside it 
+docker compose --profile cpu down         # stop it when done
+```
+
 Once inside the container, you can build the workspace with:
 
 ```bash
