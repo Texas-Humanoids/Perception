@@ -1,11 +1,9 @@
+# colcon build outputs (regenerate with `colcon build`)
 build*/
 install*/
 log*/
-.vscode/browse.*
-# colcon build outputs (regenerate with `colcon build`)
-build/
-install/
-log/
+.vscode
+
 
 # Python
 __pycache__/
