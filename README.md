@@ -1,21 +1,30 @@
-# Isaac ROS workspace
+# humanoid_ws
 
-```bash
-export LOCAL_UID=$(id -u) LOCAL_GID=$(id -g)
+Software for the Texas Humanoids robot, a humanoid based on the
+[Berkeley Humanoid Lite](https://github.com/HybridRobotics/berkeley-humanoid-lite),
+built on **ROS 2 Jazzy**.
 
-docker compose --profile cpu build     # or
-docker compose --profile gpu build  
+This repo is a ROS 2 workspace. Right now it only has the folder layout;
+code will be added in later pull requests.
 
-docker compose --profile cpu run --rm cpu bash
-docker compose --profile gpu run --rm gpu bash
+## Repository layout
+
+```
+humanoid_ws/
+├── src/                    ROS 2 packages
+│   ├── th_description/     robot model (URDF, meshes)
+│   ├── th_bringup/         launch files and config that start the robot
+│   ├── robstride_driver/   talks to the RobStride motors over CAN
+│   ├── th_hardware/        connects ROS controllers to the motors
+│   ├── th_controllers/     custom controllers (RL walking policy)
+│   ├── th_sensors/         IMU, camera, and other sensor drivers
+│   └── th_perception/      GPU perception with Isaac ROS (optional)
+├── firmware/               microcontroller code for future custom motors
+├── policies/               trained walking policies
+└── tools/                  calibration and setup scripts
 ```
 
-Inside either container:
+`th_` = Texas Humanoids. It marks packages we wrote, so they're easy to tell
+apart from third-party ones.
 
-```bash
-source /opt/ros/jazzy/setup.bash
-colcon build --symlink-install
-```
-On GPU hosts, install the NVIDIA Container Toolkit before using the GPU profile.
-
-Make sure to open this folder in VS Code with the Remote - Containers extension. The `devcontainer.json` file will automatically build and open the container for you. You can also use the `Remote-Containers: Reopen in Container` command from the Command Palette.
+Each folder has a README describing what will go in it.
