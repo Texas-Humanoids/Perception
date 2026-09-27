@@ -1,7 +1,8 @@
 # colcon build outputs (regenerate with `colcon build`)
-build/
-install/
-log/
+build*/
+install*/
+log*/
+
 
 # Python
 __pycache__/

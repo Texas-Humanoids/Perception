@@ -1,0 +1,10 @@
+{
+  "name": "Isaac ROS (GPU)",
+  "dockerComposeFile": "../../compose.yaml",
+  "service": "gpu",
+  "runServices": [
+    "gpu"
+  ],
+  "workspaceFolder": "/ws",
+  "shutdownAction": "stopCompose"
+}

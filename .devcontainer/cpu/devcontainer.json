@@ -1,0 +1,10 @@
+{
+  "name": "Isaac ROS (CPU)",
+  "dockerComposeFile": "../../compose.yaml",
+  "service": "cpu",
+  "runServices": [
+    "cpu"
+  ],
+  "workspaceFolder": "/ws",
+  "shutdownAction": "stopCompose"
+}
