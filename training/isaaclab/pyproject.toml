@@ -1,0 +1,38 @@
+[project]
+name = "th-isaaclab"
+version = "0.1.0"
+description = "Isaac Lab environments and training scripts for Texas Humanoids robots"
+readme = "README.md"
+# Isaac Sim 6.1 only ships Python 3.12 wheels.
+requires-python = "==3.12.*"
+dependencies = [
+    # Isaac Lab 3.0 Early Access. Bump to 3.0.0 when it's generally
+    # available (NVIDIA is targeting end of October 2026).
+    "isaaclab[isaacsim,rsl-rl]==3.0.0rc1",
+    # Not used directly: isaacsim-core needs this exact NVIDIA build, which
+    # is only on NVIDIA's index. Listed here so the source below applies.
+    "opencv-python-headless-noffmpeg==4.14.0.94rc1",
+]
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv]
+# We only run Isaac Sim on Linux x86_64.
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+# When locking on a Mac, uv reads isaacsim-core's Windows wheel, which also
+# requires pywin32. That's the only difference from the Linux wheel.
+override-dependencies = ["pywin32; sys_platform == 'win32'"]
+
+[[tool.uv.index]]
+name = "nvidia"
+url = "https://pypi.nvidia.com"
+explicit = true
+
+# Sources only apply to the direct dependencies above. Everything else,
+# including Isaac Sim itself, comes from PyPI.
+[tool.uv.sources]
+isaaclab = { index = "nvidia" }
+opencv-python-headless-noffmpeg = { index = "nvidia" }
