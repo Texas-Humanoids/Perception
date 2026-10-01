@@ -1,0 +1,15 @@
+[project]
+name = "th-training"
+version = "0.1.0"
+description = "mjlab environments and training scripts for the Texas Humanoids robot"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Pinned so mjlab API changes don't silently break our tasks.
+    # Bump on purpose, in its own PR.
+    "mjlab==1.6.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
