@@ -18,6 +18,10 @@ jobs:
     defaults:
       run:
         working-directory: training
+    env:
+      # mjlab defaults MuJoCo to EGL rendering on Linux, which the runner
+      # doesn't have. The tests don't render, so turn rendering off.
+      MUJOCO_GL: disable
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.2.0
