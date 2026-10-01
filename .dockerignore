@@ -2,3 +2,7 @@
 build*
 install*
 log*
+**/.venv
+training/logs
+training/outputs
+training/wandb
