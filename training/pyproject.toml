@@ -10,6 +10,9 @@ dependencies = [
     "mjlab==1.6.0",
 ]
 
+[dependency-groups]
+dev = ["pytest"]
+
 [build-system]
 requires = ["uv_build>=0.8,<0.13"]
 build-backend = "uv_build"

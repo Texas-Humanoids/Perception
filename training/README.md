@@ -21,8 +21,10 @@ sides in the same pull request.
 ```bash
 cd training
 uv sync
-uv run python -c "import mjlab, th_training"
+uv run pytest
 ```
+
+CI runs the same tests on every pull request that touches `training/`.
 
 macOS works for small CPU experiments. Real training runs should use Linux
 with an NVIDIA GPU.

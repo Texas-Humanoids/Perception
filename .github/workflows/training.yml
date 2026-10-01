@@ -1,0 +1,29 @@
+name: training
+
+# Only runs when training code (or this file) changes.
+on:
+  pull_request:
+    paths:
+      - "training/**"
+      - ".github/workflows/training.yml"
+  push:
+    branches: [main]
+    paths:
+      - "training/**"
+      - ".github/workflows/training.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: training
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          cache-dependency-glob: training/uv.lock
+      # --locked fails if uv.lock is out of date with pyproject.toml
+      - run: uv sync --locked
+      - run: uv run pytest -q
