@@ -1,20 +1,16 @@
 # training/isaaclab
 
-Policy training with [Isaac Lab](https://isaac-sim.github.io/IsaacLab/) 3.0
-on Isaac Sim 6.1. See [`../README.md`](../README.md) for how this fits with
-the other simulator.
-
-We're on **3.0.0rc1**, NVIDIA's Early Access release: features are frozen and
-only bug fixes are going in. General availability is targeted for the end of
-October 2026; bump the pin when it ships.
+Policy training with [Isaac Lab](https://isaac-sim.github.io/IsaacLab/)
+2.3.2, the latest generally available release, on Isaac Sim 5.1. See
+[`../README.md`](../README.md) for how this fits with the other simulator.
 
 ## Requirements
 
-From the [Isaac Sim 6.1 requirements](https://docs.isaacsim.omniverse.nvidia.com/6.1.0/installation/requirements.html):
+From the [Isaac Sim 5.1 requirements](https://docs.isaacsim.omniverse.nvidia.com/5.1.0/installation/requirements.html):
 
 - Ubuntu 22.04 or 24.04, x86_64. **There is no macOS support.**
 - At least a GeForce RTX 4080 (16 GB VRAM) and 32 GB RAM
-- NVIDIA driver 595.58.03 (the version Isaac Sim 6.1 was tested on)
+- NVIDIA driver 580.65.06 (the version Isaac Sim 5.1 was tested on)
 
 ## Setup
 
@@ -23,45 +19,35 @@ cd training/isaaclab
 uv sync
 ```
 
-This is a large download. Then train a cartpole for a few iterations with
-each physics backend:
+This is a large download. Then check that it works:
 
 ```bash
-# MuJoCo Warp physics (the same engine mjlab uses). Doesn't start Isaac Sim.
-uv run isaaclab train --rl_library rsl_rl --task Isaac-Cartpole \
-    --num_envs 64 --max_iterations 5 physics=newton_mjwarp
-
-# PhysX physics. Starts Isaac Sim.
-uv run isaaclab train --rl_library rsl_rl --task Isaac-Cartpole \
-    --num_envs 64 --max_iterations 5 physics=isaacsim_physx
+uv run isaacsim     # opens the Isaac Sim window
+uv run python -c "from isaaclab.app import AppLauncher; AppLauncher(headless=True).app.close()"
 ```
 
-The first Isaac Sim launch is slow while it builds caches. It also asks you
-to accept the NVIDIA Omniverse license (EULA): read it and accept it yourself.
+The first launch can take over 10 minutes while Isaac Sim downloads its
+extensions. It also asks you to accept the NVIDIA Omniverse license (EULA):
+read it and accept it yourself.
 Don't set `OMNI_KIT_ACCEPT_EULA` in shared config to skip the prompt for
 others.
 
 ## Comparing against mjlab
 
-Isaac Lab 3.0 can run the same task on different physics engines. That lets
-us separate two questions:
-
-- **mjlab vs Isaac Lab as frameworks:** run Isaac Lab with
-  `physics=newton_mjwarp`. Both use MuJoCo Warp 3.11 and RSL-RL 5.4, so most
-  differences come from the frameworks themselves.
-- **MuJoCo vs PhysX as physics engines:** run the same Isaac Lab task with
-  `physics=isaacsim_physx`. A policy that works in both is more likely to work
-  on the real robot.
+Isaac Lab 2.3 uses PhysX, mjlab uses MuJoCo Warp, so a policy that works in
+both is more likely to work on the real robot. Keep in mind that they also
+use different major versions of RSL-RL (3.0 here, 5.4 in mjlab), so training
+curves won't be directly comparable.
 
 ## Notes on `pyproject.toml`
 
-The lockfile is Linux x86_64 only. Two settings make it resolve, and both are
-explained in comments: `opencv-python-headless-noffmpeg` is listed as a
-direct dependency so it comes from NVIDIA's index, and a `pywin32` override
-makes the lockfile resolvable from a Mac.
+The lockfile is Linux x86_64 only. Two settings are explained in comments
+there: a release-date cutoff (Isaac Lab 2.3.2 doesn't cap most of its
+dependencies), and a `pywin32` override (NVIDIA's PyPI stub for
+`isaacsim-core` declares it for every platform).
 
 ## What will go here
 
-- `src/th_isaaclab/`: our robot configs and tasks, matching the mjlab ones.
-  The `isaaclab` command finds tasks from installed packages through the
-  `isaaclab.tasks` entry point, so ours will show up next to the built-in ones.
+- `src/th_isaaclab/`: our robot configs and tasks, matching the mjlab ones,
+  plus our own train and play scripts. The pip package doesn't include
+  Isaac Lab's scripts; those live in its GitHub repo.
