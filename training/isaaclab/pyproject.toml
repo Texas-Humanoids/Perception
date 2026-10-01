@@ -1,0 +1,60 @@
+[project]
+name = "th-isaaclab"
+version = "0.1.0"
+description = "Isaac Lab environments and training scripts for Texas Humanoids robots"
+readme = "README.md"
+# Isaac Sim 5.1 only supports Python 3.11.
+requires-python = "==3.11.*"
+dependencies = [
+    # Same versions as the Berkeley Humanoid Lite repo, so its Isaac Lab
+    # tasks can serve as a known-good baseline. Bump on purpose, in its own PR.
+    "isaaclab[isaacsim,all]==2.3.2.post1",
+    "isaacsim[all,extscache]==5.1.0",
+    "isaacsim-core==5.1.0.0",
+    "torch==2.7.0",
+    "torchvision==0.22.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv]
+# Isaac Sim only ships Linux x86_64 wheels (and Windows, which we don't use).
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+required-environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+# Isaac Lab 2.3.2 doesn't cap most of its dependencies, so only use package
+# versions that existed when it was released (2026-02-11). Move this date
+# along with the isaaclab pin. NVIDIA's index has no upload dates, so the
+# packages from it are exempt.
+exclude-newer = "2026-02-12T00:00:00Z"
+exclude-newer-package = { isaaclab = false, isaacsim = false, isaacsim-core = false }
+
+# When locking on a Mac, uv can't use the Linux wheel's metadata for
+# isaacsim-core and falls back to the Windows wheel, which requires pywin32.
+# That's the only difference between the two wheels.
+override-dependencies = ["pywin32==306; sys_platform == 'win32'"]
+
+# flatdict's sdist doesn't build with newer setuptools.
+[tool.uv.extra-build-dependencies]
+flatdict = ["setuptools<81"]
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "nvidia"
+url = "https://pypi.nvidia.com"
+explicit = true
+
+# Sources only apply to the direct dependencies above. Everything else,
+# including the other isaacsim-* packages, comes from PyPI.
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchvision = { index = "pytorch" }
+isaaclab = { index = "nvidia" }
+isaacsim = { index = "nvidia" }
+isaacsim-core = { index = "nvidia" }
